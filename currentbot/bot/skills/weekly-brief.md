@@ -25,5 +25,5 @@ Or DM the bot: `weekly brief`.
 4. Run the three searches in skill `three-feeds`. Ignore that skill's watchlist-first step and its 3-card cap.
 5. Post **5–10** ranked actionable events. Fewer when the week is thin. Never pad. Each line: rank, company, site, Observed signal + date, one **Why this matters for AHP** line (6-log / 24h mobilize / shutdown).
 6. Rank by facility move, suite work, shutdown, clean utilities, sterile / QA / facilities / validation leadership, or Environmental Monitoring / Sterile/Aseptic Manufacturing intent. An NC headquarters whose plant is elsewhere does not count.
-7. Close with dig-in by number and `prep <account>` → facilities/QA/ops contacts only.
-8. No GTM / bulk enrich unless asked. No Nighthawk. No mcp oauth.
+7. Call `post_act_cards` with the **top 3** only (Prep me / Mute this / Add to watchlist). Close with dig-in by number for the rest.
+8. No GTM / bulk enrich unless asked. No Nighthawk. No mcp oauth. Slack only — no ZoomInfo website.

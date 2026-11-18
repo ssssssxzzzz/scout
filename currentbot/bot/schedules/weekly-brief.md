@@ -15,7 +15,7 @@ Run skill `weekly-brief` now. Use the three searches from skill `three-feeds`, t
    - Intent: decontamination/excursion → Environmental Monitoring; sterile fill-finish → Sterile/Aseptic Manufacturing (say if exact phrase missing)
 5. Noise cut: drop clinical-trial writeups, earnings, restaurants, generic permits unless lab/pharma suite address. Prefer scoops + intent. No GTM update / bulk enrich.
 6. Post **5–10** ranked actionable events. Fewer when the week is thin. Never pad. Each line: rank, company, site, Observed signal + date, why-now, next step, and one closing line **Why this matters for AHP** (6-log kill / 24h mobilize / shutdown adjacency).
-7. After the list, offer dig-in by number and `prep <account>` for facilities/QA/ops contacts only.
-8. Never mention Nighthawk. Never run mcp oauth. cursorAccount ZoomInfo only.
+7. After the list, call `post_act_cards` with the top 3 cards (Prep me / Mute this / Add to watchlist). Offer dig-in by number for the rest.
+8. Never mention Nighthawk. Never run mcp oauth. cursorAccount ZoomInfo only. Slack only — no ZoomInfo website.
 
 If this run has no Slack thread to post into, write the brief clearly so a later Slack follow-up can paste or dig in by number.
