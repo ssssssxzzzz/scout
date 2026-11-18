@@ -1,29 +1,14 @@
 # START HERE (Jacob)
 
-Live ZoomInfo via Cursor-account MCP + Slack Socket Mode.
+Live bot: the Cursor-hosted deployment. Source is GitHub `ssssssxzzzz/scout`, folder `currentbot`. A change ships when that ref is deployed.
 
-## Every time you use the bot
+## Phone menu
 
-```bash
-cd /agent/zoominfo-brief
-# If Slack fails auth: bash save-slack-tokens.sh  (paste tokens in the terminal only; don't put them in chat)
-npx @grok/agent-sdk@0.6.0 serve --dir . --dev
-```
-
-Leave that terminal running. Wait for `Socket Mode connected`.
-
-In Slack, try: **help** → then **1** (facility moves) or a suggested-prompt chip.
+In Slack, say **help**. Six playbook buttons show up in the thread. Tap one. Typing **1** through **6** still works. Desktop also shows up to four suggested-prompt chips.
 
 ## Weekly Monday brief
 
-Schedule: `bot/schedules/weekly-brief.md` — cron `0 13 * * 1` (Monday 13:00 UTC).
-
-- Production / non-dev serve: fires on cron.
-- `--dev` does **not** auto-fire. Trigger:
-
-```bash
-curl -X POST http://127.0.0.1:3000/zoominfo-brief/v1/dev/schedules/weekly-brief
-```
+Schedule: `bot/schedules/weekly-brief.md` — cron `0 13 * * 1` (Monday 13:00 UTC) on the hosted deployment.
 
 Or DM: **weekly brief** / menu **6**.
 

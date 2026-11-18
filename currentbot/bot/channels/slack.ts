@@ -1,19 +1,21 @@
 import { slackChannel } from "@grok/agent-sdk/channels/slack";
+import { mobileMenuInbound, onMobileMenuAction } from "./mobile-menu.ts";
 
 /**
- * Slack channel (Socket Mode).
+ * Slack channel for the Cursor-hosted deployment.
  *
- * Tokens: ZOOMINFO_BRIEF_SLACK_BOT_TOKEN + ZOOMINFO_BRIEF_SLACK_APP_TOKEN
- * (see .agent-serve/slack/env.example).
- *
- * Menu picks: Slack allows ≤4 suggestedPrompts (chip-style). True Block Kit
- * buttons need onBlockAction + custom blocks — not wired here (keeps Socket
- * Mode stable). Numbered menu text in instructions covers picks 1–6.
+ * The control plane delivers mentions, DMs, and Block Kit clicks
+ * (`block_actions`). Phone Slack gets the 1–6 menu as buttons. A click
+ * dispatches that playbook. Desktop still has up to four suggested-prompt chips.
+ * Tool-approval clicks resolve before this menu handler.
  */
 export default slackChannel({
   envPrefix: "ZOOMINFO_BRIEF",
   // Posts the ZoomInfo OAuth Connect card in Slack. Without it the call fails closed.
   toolApprovals: true,
+  onAppMention: mobileMenuInbound(),
+  onDirectMessage: mobileMenuInbound(),
+  onBlockAction: onMobileMenuAction,
   suggestedPromptsTitle: "What do you want?",
   suggestedPrompts: [
     { title: "Menu", message: "help" },

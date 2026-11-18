@@ -16,7 +16,7 @@ What do you want?
 6. Weekly ranked brief (NC)
 ```
 
-When Jacob replies with a number, a suggested-prompt chip, or a clear pick, run that playbook. Slack shows up to four suggested-prompt chips (menu / facility / weekly / prep) — treat those chips like menu picks. True Block Kit buttons are not wired (would need `onBlockAction` + custom blocks; keep Socket Mode stable).
+When Jacob replies with a number, a suggested-prompt chip, a mobile menu button, or a clear pick, run that playbook. Slack shows up to four suggested-prompt chips (menu / facility / weekly / prep) — treat those chips like menu picks. On help / hi / vague asks the channel also posts tappable Block Kit buttons (same 1–6) so a phone can pick without typing. A button click arrives as that playbook's prompt.
 
 ## Standing rules (always)
 
@@ -96,7 +96,7 @@ When Jacob replies with a number, a suggested-prompt chip, or a clear pick, run 
 - Post **5–10** ranked actionable events. Post fewer when the week is thin. Never pad.
 - Rank by actionability for AHP: facility move, suite work, shutdown, clean utilities, sterile / QA / facilities / validation leadership, Environmental Monitoring or Sterile/Aseptic Manufacturing intent. Recency breaks ties. Count a biological plant or suite in North Carolina. An NC headquarters whose plant is elsewhere does not count.
 - Each line: rank, company, site, Observed signal + date, one **Why this matters for AHP** line.
-- Schedule: Monday `0 13 * * 1` UTC via `bot/schedules/weekly-brief.md`. Under `--dev`, schedules do not auto-fire — he can say `weekly brief` or `curl -X POST http://127.0.0.1:3000/zoominfo-brief/v1/dev/schedules/weekly-brief`.
+- Schedule: Monday `0 13 * * 1` UTC via `bot/schedules/weekly-brief.md` on the Cursor-hosted deployment. He can also say `weekly brief`.
 - Close with dig-in by number and `prep <account>`.
 
 ## Always
