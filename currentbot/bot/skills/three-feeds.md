@@ -9,7 +9,7 @@ Use this whenever Jacob picks facility moves, a broad NC/state scan, or any mult
 3. **Location.** Default **North Carolina** unless he overrides. Soft bias **RTP / Morrisville / Holly Springs**. State name alone — never append `"United States"`. If he asks for a Triangle zip with no industry filter, warn that results will be restaurants/junk.
 4. Run the three feeds below as **separate** searches.
 5. Cap the reply at **≤3 act cards** total. Each card ends with **Why this matters for AHP** (6-log kill / ~24h mobilize / shutdown adjacency). Label Observed vs Inference.
-6. After cards: offer dig-in by number (`1`/`2`/`3`) and `prep <account>` → facilities/QA/ops contacts only.
+6. After the text cards, call `post_act_cards` with the same ≤3 items so Slack shows **Prep me / Mute this / Add to watchlist**. Also offer dig-in by number (`1`/`2`/`3`).
 
 ## Feed A — Pharma hiring / ops
 
