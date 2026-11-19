@@ -1,14 +1,15 @@
 # Weekday morning digest
 
-Short Slack-only AHP digest. Use when the `morning-digest` schedule fires, or when Jacob says "morning digest" / "daily digest".
+Short Slack-only AHP digest. Use when the `morning-digest` schedule fires, or when Jacob says "morning digest" / "daily digest", or when he asks what schedules exist (list this **and** Monday `weekly-brief`).
 
 This is **not** alert mode. ZoomInfo's own app covers alerts. Keep this to ~3 act cards.
 
 ## Cadence
 
-- Schedule file: `bot/schedules/morning-digest.ts`
+- Schedule file: `bot/schedules/morning-digest.ts` — registered via `defineSchedule` (`kind: run`)
 - Cron: `0 12 * * 1-5` (weekdays 12:00 **UTC** ≈ **7am ET** in EST / **8am ET** in EDT)
-- Destination: Slack chat saved by `set_digest_destination` ("send morning digests here"), or env/secret `SCOUT_DIGEST_CHANNEL_ID`
+- Sibling: Monday `weekly-brief` at `0 13 * * 1` UTC ≈ 8am ET — longer 5–10 card brief
+- Destination: Slack chat saved by `set_digest_destination` ("send morning digests here" / chip **Digests here**), or env/secret `SCOUT_DIGEST_CHANNEL_ID`. Without a destination the cron still exists but posts nothing — say that; do not claim the schedule is missing.
 - Production / hosted `running` deploy: fires on cron
 - `serve --dev`: **does not** auto-fire. Trigger by hand:
 
