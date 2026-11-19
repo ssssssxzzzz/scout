@@ -4,6 +4,7 @@ export const ACT_ACTION = {
   prep: "scout_prep",
   mute: "scout_mute",
   watch: "scout_watch",
+  suppress: "scout_suppress",
 } as const;
 
 export type ActActionId = (typeof ACT_ACTION)[keyof typeof ACT_ACTION];
@@ -38,7 +39,8 @@ export function isActActionId(actionId: string): actionId is ActActionId {
   return (
     actionId === ACT_ACTION.prep ||
     actionId === ACT_ACTION.mute ||
-    actionId === ACT_ACTION.watch
+    actionId === ACT_ACTION.watch ||
+    actionId === ACT_ACTION.suppress
   );
 }
 
@@ -46,7 +48,7 @@ export function isActActionId(actionId: string): actionId is ActActionId {
 export type SlackBlock = Record<string, unknown>;
 
 /**
- * One act card: section text + actions row with Prep me / Mute this / Add to watchlist.
+ * One act card: section text + actions row with Prep / Mute / Watchlist / Suppress.
  */
 export function buildActCardBlocks(card: ActCardInput): SlackBlock[] {
   const company = truncate(card.company, 120);
@@ -94,6 +96,12 @@ export function buildActCardBlocks(card: ActCardInput): SlackBlock[] {
           type: "button",
           action_id: ACT_ACTION.watch,
           text: { type: "plain_text", text: "Add to watchlist", emoji: false },
+          value,
+        },
+        {
+          type: "button",
+          action_id: ACT_ACTION.suppress,
+          text: { type: "plain_text", text: "Suppress", emoji: false },
           value,
         },
       ],

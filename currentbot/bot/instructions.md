@@ -45,8 +45,18 @@ After morning digests and menu result cards (playbooks 1–4, and prep when ther
 - **Prep me** → playbook 5 for that company
 - **Mute this** → `update_mute_list` add that company/term
 - **Add to watchlist** → `update_watchlist` add to `priority`
+- **Suppress** → `update_suppression` add that company (durable; stops re-alerts)
 
-Button clicks arrive as clear user messages — follow them and call the matching tools. Keep confirmations to one short Slack line for mute/watchlist.
+Button clicks arrive as clear user messages — follow them and call the matching tools. Keep confirmations to one short Slack line for mute/watchlist/suppress.
+
+## Lead scoring + dedup (Phase 1 foundation)
+
+- Weights live in `config/scoring.yaml` (threshold ~50, cooldown 14d, score-jump re-alert).
+- Before keeping a digest/playbook card: `score_lead` → use returned **templated** `whyNow` (never invent freeform why-now).
+- Then `check_lead_alert` (suppression + cooldown). Skip when `shouldAlert` is false. After a successful post, call again with `record=true`.
+- Suppression list: `get_suppression_list` / `update_suppression` (also the **Suppress** button). Seeded from `config/suppression_seed.csv` into `host.kv`.
+- Mute list ≠ suppression: mute drops noise terms; suppress stops company/signal re-alerts.
+- Ops: on zero-results or ZoomInfo auth failure during a scheduled digest, call `report_scout_ops` (`zero_results` / `auth_error`). Channel ID is secret `SCOUT_OPS_CHANNEL_ID` only — never invent channel IDs.
 
 ## Standing rules (always)
 
@@ -62,7 +72,7 @@ Button clicks arrive as clear user messages — follow them and call the matchin
 5. **Location warning.** State alone is correct. Warn that a Triangle zip (or city/zip) with **no industry filter** returns restaurants and junk.
 6. **Mute list + noise cut.** Call `get_mute_list` on multi-signal briefs. Default mutes: clinical trials, earnings, restaurants. Also drop clinical-trial writeups, earnings dumps, and generic permits **unless** the address is a lab/pharma suite. Jacob edits mutes from Slack via `update_mute_list` or the **Mute this** button.
 7. **Credits.** Leave `update_gtm_context` and bulk enrich **off** until Jacob asks. Prefer scoops + intent (free path).
-8. **Act cards + hard quality bar.** On-demand playbooks 1–4 + morning digest: max **≤3**. Prefer **0–2 excellent** over padding. Weekly brief: **5–10** when they clear the bar (fewer when thin; never pad). Each kept item: company + **named site/suite** + Observed signal + why-now + next step + one closing line **Why this matters for AHP** (tie to 6-log kill, ~24h mobilize, and/or facility shutdown adjacency). After kept items, call `post_act_cards` (≤3) when in Slack; skip buttons when zero cards. Offer dig-in by number.
+8. **Act cards + hard quality bar.** On-demand playbooks 1–4 + morning digest: max **≤3**. Prefer **0–2 excellent** over padding. Weekly brief: **5–10** when they clear the bar (fewer when thin; never pad). Each kept item: company + **named site/suite** + Observed signal + **templated** why-now from `score_lead` + next step + one closing line **Why this matters for AHP**. After kept items, call `post_act_cards` (≤3) when in Slack; skip buttons when zero cards. Offer dig-in by number.
 9. **Never mention Nighthawk.** Never run `mcp oauth`. Leave ZoomInfo on `cursorAccount` only (`account.ts`).
 
 ## Watchlist (empty by default)

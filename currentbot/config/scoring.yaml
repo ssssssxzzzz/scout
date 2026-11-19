@@ -1,0 +1,44 @@
+# AHP lead scoring — edit weights without code changes.
+# Threshold ~50 matches "prefer 0–2 excellent / empty day OK".
+# Additive factors; score is capped at max_score.
+
+threshold: 50
+cooldown_days: 14
+# Re-alert inside cooldown when the new score is at least this many points higher.
+score_jump_realert: 15
+max_score: 100
+
+# Primary signal factors (pick the strongest that applies; helpers may stack).
+weights:
+  facility_expansion: 40
+  suite_qualification: 35
+  shutdown_signal: 40
+  cleanroom_validation: 35
+  landlord_move: 30
+  buyer_adjacent_hiring: 25
+  intent_site_named: 20
+  intent_paired: 15
+
+# Additive boosts (stack with a primary factor).
+  watchlist_priority: 10
+  watchlist_competitor: 5
+  rtp_geo: 5
+  named_site: 10
+
+# Deterministic why-now templates keyed by factor id (no freeform invent).
+why_now:
+  facility_expansion: "Facility expansion / new capacity at a named site — AHP window for 6-log decon + ~24h mobilize."
+  suite_qualification: "Suite qualification / commissioning at a named site — cleanroom adjacency for AHP."
+  shutdown_signal: "Shutdown / turnaround signal — high-value AHP shutdown job adjacency."
+  cleanroom_validation: "Cleanroom / validation work at a named site — AHP decon fit."
+  landlord_move: "Lab-landlord / suite move (Alexandria / Longfellow style) — new suite occupancy window."
+  buyer_adjacent_hiring: "Buyer-adjacent hire (sterile / QA / facilities / validation) at a named site."
+  intent_site_named: "Intent spike tied to a named manufacturing site/suite — supporting why-now only."
+  intent_paired: "Intent paired with a facility scoop — supporting evidence, not standalone noise."
+  watchlist_priority: "On your priority watchlist."
+  watchlist_competitor: "On your competitor watchlist."
+  rtp_geo: "RTP / Morrisville / Holly Springs geo bias."
+  named_site: "Named plant/suite (not HQ-only)."
+  below_threshold: "Below score threshold — do not alert."
+  suppressed: "Suppressed — do not alert."
+  cooldown: "Inside cooldown for this company + signal type."

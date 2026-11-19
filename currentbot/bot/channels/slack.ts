@@ -13,8 +13,9 @@ import { mobileMenuInbound, onMobileMenuAction } from "../lib/mobile-menu.ts";
  *
  * The control plane delivers mentions, DMs, and Block Kit clicks
  * (`block_actions`). Phone Slack gets the 1–6 menu as buttons. Act cards
- * add Prep me / Mute this / Add to watchlist. Tool-approval clicks resolve
- * before these handlers. Desktop still has up to four suggested-prompt chips.
+ * add Prep me / Mute this / Add to watchlist / Suppress. Tool-approval
+ * clicks resolve before these handlers. Desktop still has up to four
+ * suggested-prompt chips. Slash commands are not used (Block Kit + tools).
  */
 async function resolveActCardNote(
   ctx: SlackBinding,
@@ -69,6 +70,14 @@ async function onActCardAction(
     return {
       auth: blockActionAuth(action),
       message: `User tapped Mute this for "${company}". Call update_mute_list with action=add and term="${company}". Confirm in one short Slack line. Do not run a new scan.`,
+    };
+  }
+
+  if (action.actionId === ACT_ACTION.suppress) {
+    await resolveActCardNote(ctx, action, `Suppressed · ${company}`);
+    return {
+      auth: blockActionAuth(action),
+      message: `User tapped Suppress for "${company}". Call update_suppression with action=add and company="${company}" (company-wide). Confirm in one short Slack line. Do not run a new scan.`,
     };
   }
 

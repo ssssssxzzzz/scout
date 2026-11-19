@@ -44,6 +44,7 @@ Or DM: `morning digest`.
 3. Geo: **North Carolina** state alone unless he overrides. Soft bias RTP / Morrisville / Holly Springs. NC HQ with plant elsewhere does not count.
 4. Run the three searches in skill `three-feeds` (separate calls). Apply that skill's quality bar. Cap this digest at **≤3** cards total (unlike the Monday weekly brief's length).
 5. Filter hard: facility/ops first; bare intent only as support when a named plant/suite exists.
-6. Each kept card: company, **named site/suite**, Observed signal + date, next step, **Why this matters for AHP**.
-7. If ≥1 card: call `post_act_cards` with the same ≤3 cards (**Prep me / Mute this / Add to watchlist**). If 0 cards: say **No AHP-grade facility moves today** and skip `post_act_cards`.
-8. Close with dig-in by number or tap a button when cards exist. No GTM / bulk enrich. No Nighthawk. No mcp oauth. Slack only.
+6. For keepers: `score_lead` (factors + boosts) → must `clearsThreshold`; use templated `whyNow` (no freeform invent). Then `check_lead_alert`; skip if suppressed/cooldown. Record with `record=true` after a successful post.
+7. Each kept card: company, **named site/suite**, Observed signal + date, next step, templated **Why this matters for AHP**.
+8. If ≥1 card: call `post_act_cards` (**Prep me / Mute this / Add to watchlist / Suppress**). If 0 cards: say **No AHP-grade facility moves today**, skip `post_act_cards`, and call `report_scout_ops` kind=`zero_results`.
+9. Close with dig-in by number or tap a button when cards exist. No GTM / bulk enrich. No Nighthawk. No mcp oauth. Slack only.
