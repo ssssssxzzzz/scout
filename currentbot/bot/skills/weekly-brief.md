@@ -8,11 +8,12 @@ The watchlist does not pick this brief. Rank the scan. Tag a watchlist match whe
 
 - Schedule file: `bot/schedules/weekly-brief.md`
 - Cron: `0 13 * * 1` (Monday 13:00 **UTC** ≈ 8am ET / 9am EDT)
-- Production / non-dev `agent-sdk serve`: fires on cron automatically (one process only)
+- Sibling schedule (also registered): **`morning-digest`** weekdays `0 12 * * 1-5` UTC ≈ 7am ET — short ~3 cards. Do not tell Jacob weekly is the only schedule.
+- Production / hosted `running` deploy: fires on cron automatically (one process only)
 - `serve --dev`: **does not** auto-fire. Trigger by hand:
 
 ```bash
-curl -X POST http://127.0.0.1:3000/zoominfo-brief/v1/dev/schedules/weekly-brief
+curl -X POST http://127.0.0.1:3000/currentbot/v1/dev/schedules/weekly-brief
 ```
 
 Or DM the bot: `weekly brief`.
