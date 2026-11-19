@@ -27,8 +27,9 @@ type PostResult = {
 export default defineTool({
   description: prompt`
     Post Slack Block Kit act cards with one-tap buttons:
-    Prep me, Mute this, Add to watchlist.
+    Prep me, Mute this, Add to watchlist, Suppress.
     Call this after a morning digest or menu result (≤3 cards).
+    Prefer whyAhp from score_lead templated why-now (no freeform invent).
     Only works inside a Slack thread.
   `,
   effect: "write",

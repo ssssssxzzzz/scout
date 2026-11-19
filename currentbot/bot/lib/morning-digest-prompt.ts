@@ -28,8 +28,10 @@ Fujifilm Morrisville is the **current client**: tag carefully; do **not** turn e
    - Lab-landlord moves (Alexandria / Longfellow style)
    - Intent: decontamination/excursion → Environmental Monitoring; sterile fill-finish → Sterile/Aseptic Manufacturing (say if exact phrase missing) — **supporting evidence only**, not a standalone card unless a named plant/suite is present
 5. Noise cut: drop clinical trials, earnings, restaurants, generic permits unless lab/pharma suite. Prefer scoops over bare intent. No GTM update / bulk enrich. No alert-mode spam — ZoomInfo app already covers alerts; this is a short morning digest only.
-6. Post only cards that clear the quality bar (**≤3**, prefer fewer). Each item: company, **named site/suite**, Observed signal + date, next step, and one **Why this matters for AHP** line (6-log kill / ~24h mobilize / shutdown adjacency).
-7. After the text summary, if there is ≥1 card, call \`post_act_cards\` with those same ≤3 cards so Slack shows **Prep me / Mute this / Add to watchlist** buttons. If zero cards, skip \`post_act_cards\`.
-8. Close with: dig-in by number, or tap a button (when cards exist). Never mention Nighthawk. Never run mcp oauth. cursorAccount ZoomInfo only.
+6. For each candidate that might clear the bar: call \`score_lead\` with the matching factors (facility_expansion / suite_qualification / shutdown_signal / cleanroom_validation / landlord_move / buyer_adjacent_hiring / intent_site_named / intent_paired + boosts named_site / rtp_geo / watchlist_*). Keep only if \`clearsThreshold\`. Use the returned templated \`whyNow\` as the AHP why-line — **do not invent** freeform why-now.
+7. Call \`check_lead_alert\` for company + signalType + score. Skip if \`shouldAlert\` is false (suppressed or in 14d cooldown unless score-jump). After you successfully post a card, call \`check_lead_alert\` again with \`record=true\` (or record on the successful path).
+8. Cap **≤3** cards (prefer fewer). Each item: company, **named site/suite**, Observed signal + date, next step, and the templated **Why this matters for AHP** line.
+9. After the text summary, if there is ≥1 card, call \`post_act_cards\` with those same ≤3 cards so Slack shows **Prep me / Mute this / Add to watchlist / Suppress**. If zero cards, skip \`post_act_cards\` and say **No AHP-grade facility moves today** (ops may also see zero-results when configured).
+10. Close with: dig-in by number, or tap a button (when cards exist). Never mention Nighthawk. Never run mcp oauth. cursorAccount ZoomInfo only.
 
 If ZoomInfo tools are unavailable, say so in one short Slack line and stop — do not invent scoops.`;

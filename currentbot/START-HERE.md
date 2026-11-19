@@ -29,6 +29,14 @@ Digest and menu cards call `post_act_cards` so Slack shows:
 - **Prep me** → prep that account
 - **Mute this** → add to mute list
 - **Add to watchlist** → add to priority watchlist
+- **Suppress** → durable suppress (stops re-alerts for that company)
+
+## Phase 1 foundation (lead routing)
+
+- Scoring: `config/scoring.yaml` (threshold ~50). Tools: `score_lead`, `check_lead_alert`.
+- Suppression seed: `config/suppression_seed.csv` → `host.kv` (not SQLite / ephemeral disk).
+- Channel IDs are env/secrets only — see `.env.example`. You create Slack channels manually.
+- Ops channel: set `SCOUT_OPS_CHANNEL_ID` for schedule failures + daily heartbeat (`ops-heartbeat` cron `0 11 * * *` UTC).
 
 ## Weekly Monday brief
 
