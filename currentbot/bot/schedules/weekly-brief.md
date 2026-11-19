@@ -15,7 +15,7 @@ Run skill `weekly-brief` now. Use the three searches from skill `three-feeds`, t
    - Intent: decontamination/excursion → Environmental Monitoring; sterile fill-finish → Sterile/Aseptic Manufacturing (say if exact phrase missing) — supporting evidence only unless named plant/suite
 5. Noise cut + hard quality bar: drop clinical-trial writeups, earnings, restaurants, generic permits unless lab/pharma suite; drop/demote bare HQ-only intent; never lead with aesthetics/cosmetic HQ intent (e.g. Merz) without a confirmed Raleigh plant/suite. Prefer scoops over bare intent. No GTM update / bulk enrich.
 6. Post **5–10** ranked AHP-grade events when they clear the bar. Fewer when the week is thin. Never pad. If nothing clears: **No AHP-grade facility moves today** (or this week). Each line: rank, company, **named site**, Observed signal + date, why-now, next step, and one closing line **Why this matters for AHP** (6-log kill / 24h mobilize / shutdown adjacency).
-7. After the list, call `post_act_cards` with the top ≤3 that cleared (Prep me / Mute this / Add to watchlist). Skip buttons if zero. Offer dig-in by number for the rest.
+7. After the list, call `post_act_cards` with the top ≤3 that cleared (include `signalType`; Claim / Contacted / Not a fit / Suppress + Prep / Mute / Watchlist). Also `route_lead_alerts` with those cards (`lane=weekly` when posting the Monday rollup into `SCOUT_CHANNEL_WEEKLY`, else let signalType pick the lane). Skip both if zero. Offer dig-in by number for the rest.
 8. Never mention Nighthawk. Never run mcp oauth. cursorAccount ZoomInfo only. Slack only — no ZoomInfo website.
 
 If this run has no Slack thread to post into, write the brief clearly so a later Slack follow-up can paste or dig in by number.

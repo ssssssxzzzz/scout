@@ -6,6 +6,8 @@ import {
   buildActCardBlocks,
   type ActCardInput,
 } from "../lib/act-cards.ts";
+import { parseLane } from "../lib/lanes.ts";
+import { ensureLead, storeFromKv } from "../lib/lead-state.ts";
 
 const cardSchema = z.object({
   company: z.string().min(1),
@@ -14,6 +16,8 @@ const cardSchema = z.object({
   nextStep: z.string().optional(),
   site: z.string().optional(),
   rank: z.string().optional(),
+  signalType: z.string().optional(),
+  lane: z.string().optional(),
 });
 
 type PostResult = {
@@ -27,9 +31,10 @@ type PostResult = {
 export default defineTool({
   description: prompt`
     Post Slack Block Kit act cards with one-tap buttons:
-    Prep me, Mute this, Add to watchlist, Suppress.
-    Call this after a morning digest or menu result (≤3 cards).
-    Prefer whyAhp from score_lead templated why-now (no freeform invent).
+    Claim, Contacted, Not a fit, Suppress, Prep me, Mute this, Add to watchlist.
+    Call this after a morning digest or menu result (≤3 cards) in the current
+    thread. Prefer whyAhp from score_lead templated why-now (no freeform invent).
+    For lane fan-out to env-configured channels, also call route_lead_alerts.
     Only works inside a Slack thread.
   `,
   effect: "write",
@@ -73,12 +78,20 @@ export default defineTool({
       };
     }
 
+    const store = storeFromKv(ctx.host.kv);
     const messageTs: string[] = [];
     let posted = 0;
     for (let i = 0; i < cards.length; i++) {
+      const lane = parseLane(cards[i].lane ?? null) ?? undefined;
       const card: ActCardInput = {
-        ...cards[i],
+        company: cards[i].company,
+        signal: cards[i].signal,
+        whyAhp: cards[i].whyAhp,
+        nextStep: cards[i].nextStep,
+        site: cards[i].site,
+        signalType: cards[i].signalType,
         rank: cards[i].rank ?? String(i + 1),
+        ...(lane ? { lane } : {}),
       };
       const text = actCardFallbackText(card);
       const result = await client.chat.postMessage({
@@ -91,6 +104,13 @@ export default defineTool({
       if (result.ok && typeof result.ts === "string") {
         messageTs.push(result.ts);
         posted += 1;
+        await ensureLead(store, {
+          company: card.company,
+          signalType: card.signalType,
+          lane,
+          channelId,
+          messageTs: result.ts,
+        });
       }
     }
 

@@ -29,7 +29,7 @@ Every kept card ends with **Why this matters for AHP**. Slack-only. No Nighthawk
 3. **Location.** Default **North Carolina** unless he overrides. Soft bias **RTP / Morrisville / Holly Springs**. State name alone — never append `"United States"`. If he asks for a Triangle zip with no industry filter, warn that results will be restaurants/junk. An NC headquarters whose plant is elsewhere does not count.
 4. Run the three feeds below as **separate** searches.
 5. Apply the hard quality bar. Cap morning digest / playbooks 1–4 at **≤3 act cards** total. Prefer fewer excellent cards. Label Observed vs Inference.
-6. After text cards (when ≥1 cleared the bar), call `post_act_cards` with the same ≤3 items so Slack shows **Prep me / Mute this / Add to watchlist**. Also offer dig-in by number (`1`/`2`/`3`). Skip `post_act_cards` when zero cards.
+6. After text cards (when ≥1 cleared the bar), call `post_act_cards` with the same ≤3 items + `signalType` (**Claim / Contacted / Not a fit / Suppress** + Prep / Mute / Watchlist). Then `route_lead_alerts` with those cards (skip unset lane secrets). Also offer dig-in by number (`1`/`2`/`3`). Skip both when zero cards.
 
 ## Feed A — Pharma hiring / ops
 
