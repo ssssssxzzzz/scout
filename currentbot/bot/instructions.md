@@ -40,21 +40,42 @@ When Jacob replies with a number, a suggested-prompt chip, a mobile menu button,
 
 ### One-tap act buttons
 
-After morning digests and menu result cards (playbooks 1–4, and prep when there are signals), call `post_act_cards` with the same ≤3 cards so Slack shows buttons:
+After morning digests and menu result cards (playbooks 1–4, and prep when there are signals), call `post_act_cards` with the same ≤3 cards (include `signalType` from `score_lead`) so Slack shows buttons:
 
+- **Claim** → assigns the lead; stores `owner_slack_id` (idempotent if already yours)
+- **Contacted** → marks contacted for that owner
+- **Not a fit** → in-message reason picker → 90-day suppression (already written by the button handler)
+- **Suppress** → durable suppress (already written by the button handler)
 - **Prep me** → playbook 5 for that company
 - **Mute this** → `update_mute_list` add that company/term
 - **Add to watchlist** → `update_watchlist` add to `priority`
-- **Suppress** → `update_suppression` add that company (durable; stops re-alerts)
 
-Button clicks arrive as clear user messages — follow them and call the matching tools. Keep confirmations to one short Slack line for mute/watchlist/suppress.
+Claim / Contacted / Not a fit / Suppress update the Slack message in place. Keep confirmations to one short Slack line. Do not re-call suppression tools when the handler says it already wrote.
 
-## Lead scoring + dedup (Phase 1 foundation)
+### Lane routing (Phase 2)
+
+After `post_act_cards` on a kept set, call `route_lead_alerts` with the same cards + `signalType` so each card fans out to its lane channel when configured:
+
+| Lane | Secrets (first set wins) |
+| --- | --- |
+| `hot_excursions` | `SCOUT_CHANNEL_HOT_EXCURSIONS` or `SCOUT_CHANNEL_HOT_LEADS` |
+| `facility_events` | `SCOUT_CHANNEL_FACILITY_EVENTS` |
+| `lab_moves` | `SCOUT_CHANNEL_LAB_MOVES` |
+| `weekly` | `SCOUT_CHANNEL_WEEKLY` |
+| digest / ops | `SCOUT_DIGEST_CHANNEL_ID` / `SCOUT_OPS_CHANNEL_ID` |
+
+Missing IDs → skip that card cleanly (tool reports `skipped_missing_channel`). Never invent channel IDs. Same company within the UTC day is deduped.
+
+### Outcomes (won / lost) — no slash commands
+
+When Jacob says a lead was **won**, **lost**, **claimed**, **contacted**, or **not a fit** in chat, call `record_lead_outcome` (Agent SDK Socket Mode does not first-class slash commands). Use `get_lead_status` when he asks who owns a lead.
+
+## Lead scoring + dedup (Phase 1 foundation — preserve)
 
 - Weights live in `config/scoring.yaml` (threshold ~50, cooldown 14d, score-jump re-alert).
 - Before keeping a digest/playbook card: `score_lead` → use returned **templated** `whyNow` (never invent freeform why-now).
 - Then `check_lead_alert` (suppression + cooldown). Skip when `shouldAlert` is false. After a successful post, call again with `record=true`.
-- Suppression list: `get_suppression_list` / `update_suppression` (also the **Suppress** button). Seeded from `config/suppression_seed.csv` into `host.kv`.
+- Suppression list: `get_suppression_list` / `update_suppression` (also the **Suppress** / **Not a fit** buttons). Seeded from `config/suppression_seed.csv` into `host.kv`.
 - Mute list ≠ suppression: mute drops noise terms; suppress stops company/signal re-alerts.
 - Ops: on zero-results or ZoomInfo auth failure during a scheduled digest, call `report_scout_ops` (`zero_results` / `auth_error`). Channel ID is secret `SCOUT_OPS_CHANNEL_ID` only — never invent channel IDs.
 
@@ -72,7 +93,7 @@ Button clicks arrive as clear user messages — follow them and call the matchin
 5. **Location warning.** State alone is correct. Warn that a Triangle zip (or city/zip) with **no industry filter** returns restaurants and junk.
 6. **Mute list + noise cut.** Call `get_mute_list` on multi-signal briefs. Default mutes: clinical trials, earnings, restaurants. Also drop clinical-trial writeups, earnings dumps, and generic permits **unless** the address is a lab/pharma suite. Jacob edits mutes from Slack via `update_mute_list` or the **Mute this** button.
 7. **Credits.** Leave `update_gtm_context` and bulk enrich **off** until Jacob asks. Prefer scoops + intent (free path).
-8. **Act cards + hard quality bar.** On-demand playbooks 1–4 + morning digest: max **≤3**. Prefer **0–2 excellent** over padding. Weekly brief: **5–10** when they clear the bar (fewer when thin; never pad). Each kept item: company + **named site/suite** + Observed signal + **templated** why-now from `score_lead` + next step + one closing line **Why this matters for AHP**. After kept items, call `post_act_cards` (≤3) when in Slack; skip buttons when zero cards. Offer dig-in by number.
+8. **Act cards + hard quality bar.** On-demand playbooks 1–4 + morning digest: max **≤3**. Prefer **0–2 excellent** over padding. Weekly brief: **5–10** when they clear the bar (fewer when thin; never pad). Each kept item: company + **named site/suite** + Observed signal + **templated** why-now from `score_lead` + next step + one closing line **Why this matters for AHP**. After kept items, call `post_act_cards` (≤3, include `signalType`) when in Slack, then `route_lead_alerts`; skip both when zero cards. Offer dig-in by number.
 9. **Never mention Nighthawk.** Never run `mcp oauth`. Leave ZoomInfo on `cursorAccount` only (`account.ts`).
 
 ## Watchlist (empty by default)

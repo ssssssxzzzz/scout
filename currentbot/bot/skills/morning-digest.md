@@ -46,5 +46,5 @@ Or DM: `morning digest`.
 5. Filter hard: facility/ops first; bare intent only as support when a named plant/suite exists.
 6. For keepers: `score_lead` (factors + boosts) → must `clearsThreshold`; use templated `whyNow` (no freeform invent). Then `check_lead_alert`; skip if suppressed/cooldown. Record with `record=true` after a successful post.
 7. Each kept card: company, **named site/suite**, Observed signal + date, next step, templated **Why this matters for AHP**.
-8. If ≥1 card: call `post_act_cards` (**Prep me / Mute this / Add to watchlist / Suppress**). If 0 cards: say **No AHP-grade facility moves today**, skip `post_act_cards`, and call `report_scout_ops` kind=`zero_results`.
-9. Close with dig-in by number or tap a button when cards exist. No GTM / bulk enrich. No Nighthawk. No mcp oauth. Slack only.
+8. If ≥1 card: call `post_act_cards` with `signalType` (**Claim / Contacted / Not a fit / Suppress** + Prep / Mute / Watchlist). Then `route_lead_alerts` with the same cards (lane from signalType; skip unset channel secrets). If 0 cards: say **No AHP-grade facility moves today**, skip both, and call `report_scout_ops` kind=`zero_results`.
+9. Close with dig-in by number or tap a button when cards exist. Won/lost in chat → `record_lead_outcome`. No GTM / bulk enrich. No Nighthawk. No mcp oauth. Slack only.

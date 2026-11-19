@@ -22,21 +22,34 @@ curl -X POST http://127.0.0.1:3000/currentbot/v1/dev/schedules/morning-digest
 
 Optional fallback (private terminal / secret set — never paste into chat): `SCOUT_DIGEST_CHANNEL_ID`.
 
-## One-tap act buttons (wow #3)
+## One-tap act buttons (wow #3 + Phase 2)
 
 Digest and menu cards call `post_act_cards` so Slack shows:
 
-- **Prep me** → prep that account
-- **Mute this** → add to mute list
-- **Add to watchlist** → add to priority watchlist
+- **Claim** → assigns lead (`owner_slack_id`); idempotent in-place update
+- **Contacted** → marks contacted
+- **Not a fit** → reason picker → 90-day suppress
 - **Suppress** → durable suppress (stops re-alerts for that company)
+- **Prep me** / **Mute this** / **Add to watchlist** (unchanged)
 
-## Phase 1 foundation (lead routing)
+Won/lost in chat → tool `record_lead_outcome` (no slash commands).
+
+## Phase 1 foundation (preserve)
 
 - Scoring: `config/scoring.yaml` (threshold ~50). Tools: `score_lead`, `check_lead_alert`.
 - Suppression seed: `config/suppression_seed.csv` → `host.kv` (not SQLite / ephemeral disk).
-- Channel IDs are env/secrets only — see `.env.example`. You create Slack channels manually.
 - Ops channel: set `SCOUT_OPS_CHANNEL_ID` for schedule failures + daily heartbeat (`ops-heartbeat` cron `0 11 * * *` UTC).
+
+## Phase 2 lane routing
+
+- Tool `route_lead_alerts` posts cards to signal lanes when secrets are set; missing IDs skip cleanly.
+- Secrets (create channels + invite the bot, then `secret set`):
+  - `SCOUT_CHANNEL_HOT_EXCURSIONS` (or alias `SCOUT_CHANNEL_HOT_LEADS`)
+  - `SCOUT_CHANNEL_FACILITY_EVENTS`
+  - `SCOUT_CHANNEL_LAB_MOVES`
+  - `SCOUT_CHANNEL_WEEKLY`
+  - `SCOUT_OPS_CHANNEL_ID` / `SCOUT_DIGEST_CHANNEL_ID`
+- Full list: `.env.example`. Never paste token values into chat.
 
 ## Weekly Monday brief
 
